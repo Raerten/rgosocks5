@@ -36,7 +36,7 @@ dockers:
       - raerten/rgosocks5:{{ .Tag }}-amd64
     goos: linux
     goarch: amd64
-    goamd64: v3
+    goamd64: v1
     skip_push: false
     build_flag_templates:
       - --platform=linux/amd64
@@ -44,6 +44,8 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
+    extra_files:
+      - .build/passwd
   - image_templates:
       - raerten/rgosocks5:latest-arm64v8
       - raerten/rgosocks5:{{ .Tag }}-arm64v8
@@ -56,6 +58,8 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
+    extra_files:
+      - .build/passwd
   - image_templates:
       - raerten/rgosocks5:latest-armv7
       - raerten/rgosocks5:{{ .Tag }}-armv7
@@ -69,6 +73,8 @@ dockers:
       - --label=org.opencontainers.image.version={{.Version}}
       - --label=org.opencontainers.image.created={{.Date}}
       - --label=org.opencontainers.image.revision={{.FullCommit}}
+    extra_files:
+      - .build/passwd
 
 docker_manifests:
   - name_template: raerten/rgosocks5:{{ .Tag }}

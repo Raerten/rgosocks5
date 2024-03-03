@@ -9,6 +9,7 @@ import (
 	"rgosocks/config"
 	"rgosocks/rules"
 	"syscall"
+	_ "time/tzdata"
 )
 
 func startProxy() {
