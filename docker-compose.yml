@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  socks5:
+    image: rgosocks
+    container_name: rgosocks
+    ports:
+      - "1080:1080"
