@@ -46,9 +46,9 @@ services:
 | PROXY_REJECT_IPS        | Comma separated black list dest IPs                                                          |                         |
 | PROXY_DISABLE_BIND      | Disable bind                                                                                 | false                   |
 | PROXY_DISABLE_ASSOCIATE | Disable associate                                                                            | false                   |
-| DNS_HOST                | Host for of custom UDP DNS server                                                            |                         |
+| DNS_HOST                | Host for of custom UDP DNS server<br/>If empty - use system resolve                          |                         |
 | DNS_PORT                | Port for custom UDP DNS server                                                               | 53                      |
-| DNS_USE_CACHE           | Use program cache for custom DNS server<br/>respect TTL<br/>works only for custom DNS server | true                    |
+| DNS_USE_CACHE           | Use program cache for custom DNS server<br/>Respect TTL<br/>Works only for custom DNS server | true                    |
 | PREFER_IPV6             | Prefer IPv6 IP when resolve FQDN                                                             | false                   |
 
 
