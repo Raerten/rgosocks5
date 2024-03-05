@@ -32,20 +32,25 @@ services:
 
 ## Env variables
 
-| Environment variable | Description                          | Default value           |
-| --- |--------------------------------------|-------------------------|
-| PROXY_USER | Username for proxy                   |                         |
-| PROXY_PASSWORD | Password for proxy                   |                         |
-| PROXY_HOST | Host for proxy                       | 0.0.0.0                 |
-| PROXY_PORT | Port for proxy                       | 1080                    |
-| PROXY_ADDRESS | Address for proxy                    | $PROXY_HOST:$PROXY_PORT |
-| TZ | Timezone for accurate log times      | UTC                     |
-| PROXY_ALLOWED_DEST_FQDN | Comma serarated white list dest FQDN |                         |
-| PROXY_REJECT_DEST_FQDN | Comma serarated black list dest FQDN |                         |
-| PROXY_ALLOWED_IPS | Comma serarated white list dest IPs  |                         |
-| PROXY_REJECT_IPS | Comma serarated black list dest IPs  |                         |
-| PROXY_DISABLE_BIND | Disable bind                         | false |
-| PROXY_DISABLE_ASSOCIATE | Disable assosiate                    | false |
+| Environment variable    | Description                                                                                  | Default value           |
+|-------------------------|----------------------------------------------------------------------------------------------|-------------------------|
+| PROXY_USER              | Username for proxy                                                                           |                         |
+| PROXY_PASSWORD          | Password for proxy                                                                           |                         |
+| PROXY_HOST              | Host for proxy                                                                               | 0.0.0.0                 |
+| PROXY_PORT              | Port for proxy                                                                               | 1080                    |
+| PROXY_ADDRESS           | Address for proxy                                                                            | $PROXY_HOST:$PROXY_PORT |
+| TZ                      | Timezone for accurate log times                                                              | UTC                     |
+| PROXY_ALLOWED_DEST_FQDN | Comma separated white list dest FQDN                                                         |                         |
+| PROXY_REJECT_DEST_FQDN  | Comma separated black list dest FQDN                                                         |                         |
+| PROXY_ALLOWED_IPS       | Comma separated white list dest IPs                                                          |                         |
+| PROXY_REJECT_IPS        | Comma separated black list dest IPs                                                          |                         |
+| PROXY_DISABLE_BIND      | Disable bind                                                                                 | false                   |
+| PROXY_DISABLE_ASSOCIATE | Disable associate                                                                            | false                   |
+| DNS_HOST                | Host for of custom UDP DNS server                                                            |                         |
+| DNS_PORT                | Port for custom UDP DNS server                                                               | 53                      |
+| DNS_USE_CACHE           | Use program cache for custom DNS server<br/>respect TTL<br/>works only for custom DNS server | true                    |
+| PREFER_IPV6             | Prefer IPv6 IP when resolve FQDN                                                             | false                   |
+
 
 ## License
 
