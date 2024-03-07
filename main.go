@@ -1,14 +1,20 @@
 package main
 
 import (
+	"fmt"
+	"github.com/miekg/dns"
+	"github.com/patrickmn/go-cache"
 	"github.com/things-go/go-socks5"
 	"log"
 	"log/slog"
+	"net"
 	"os"
 	"os/signal"
 	"rgosocks/config"
+	"rgosocks/resolver"
 	"rgosocks/rules"
 	"syscall"
+	"time"
 	_ "time/tzdata"
 )
 
@@ -26,6 +32,11 @@ func startProxy() {
 		socks5.WithLogger(socks5.NewLogger(log.New(os.Stdout, "socks5: ", log.LstdFlags))),
 		socks5.WithAuthMethods(authenticator),
 		socks5.WithRule(&rules.ProxyRulesSet{}),
+		socks5.WithResolver(&resolver.DNSResolver{
+			Cache:      cache.New(1*time.Minute, 3*time.Minute),
+			DNSClient:  new(dns.Client),
+			DNSAddress: net.JoinHostPort(config.Cfg.DnsHost, fmt.Sprintf("%d", config.Cfg.DnsPort)),
+		}),
 	)
 
 	slog.Info("Starting Socks5 Proxy", "address", config.Cfg.ProxyAddress)

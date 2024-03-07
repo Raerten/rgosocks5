@@ -17,6 +17,10 @@ type Config struct {
 	RejectIPs        []string `env:"PROXY_REJECT_IPS" envDefault:""`
 	DisableBind      bool     `env:"PROXY_DISABLE_BIND" envDefault:"false"`
 	DisableAssociate bool     `env:"PROXY_DISABLE_ASSOCIATE" envDefault:"false"`
+	DnsHost          string   `env:"DNS_HOST" envDefault:""`
+	DnsPort          int      `env:"DNS_PORT" envDefault:"53"`
+	DnsUseCache      bool     `env:"DNS_USE_CACHE" envDefault:"true"`
+	PreferIpv6       bool     `env:"PREFER_IPV6" envDefault:"false"`
 }
 
 var Cfg = Config{}
