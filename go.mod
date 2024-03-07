@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/caarlos0/env/v10 v10.0.0
+	github.com/foxcpp/go-mockdns v1.1.0
 	github.com/miekg/dns v1.1.58
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.9.0
