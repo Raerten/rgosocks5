@@ -41,10 +41,10 @@ services:
 | PROXY_ADDRESS           | Address for proxy                                                                            | $PROXY_HOST:$PROXY_PORT |
 | TZ                      | Timezone for accurate log times                                                              | UTC                     |
 | LOG_LEVEL_DEBUG         | Enable debug logs                                                                            | false                   |
-| PROXY_ALLOWED_DEST_FQDN | Comma separated white list dest FQDN                                                         |                         |
-| PROXY_REJECT_DEST_FQDN  | Comma separated black list dest FQDN                                                         |                         |
-| PROXY_ALLOWED_IPS       | Comma separated white list dest IPs                                                          |                         |
-| PROXY_REJECT_IPS        | Comma separated black list dest IPs                                                          |                         |
+| PROXY_ALLOWED_DEST_FQDN | Comma separated white list of dest FQDN                                                      |                         |
+| PROXY_REJECT_DEST_FQDN  | Comma separated black list of dest FQDN                                                      |                         |
+| PROXY_ALLOWED_IPS       | Comma separated white list of dest IP or CIDR                                                |                         |
+| PROXY_REJECT_IPS        | Comma separated black list of dest IP or CIDR                                                |                         |
 | PROXY_DISABLE_BIND      | Disable bind                                                                                 | false                   |
 | PROXY_DISABLE_ASSOCIATE | Disable associate                                                                            | false                   |
 | DNS_HOST                | Host for of custom UDP DNS server<br/>If empty - use system resolve                          |                         |
