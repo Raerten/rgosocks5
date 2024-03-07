@@ -4,11 +4,14 @@ import (
 	"context"
 	"github.com/things-go/go-socks5"
 	"github.com/things-go/go-socks5/statute"
+	"net"
 	"rgosocks/config"
 	"slices"
 )
 
 type ProxyRulesSet struct {
+	AllowedIPNet []*net.IPNet
+	RejectIPNet  []*net.IPNet
 }
 
 func (r *ProxyRulesSet) Allow(ctx context.Context, req *socks5.Request) (context.Context, bool) {
@@ -20,22 +23,32 @@ func (r *ProxyRulesSet) Allow(ctx context.Context, req *socks5.Request) (context
 		return ctx, false
 	}
 
-	result := len(config.Cfg.AllowedDestFqdn) == 0 && len(config.Cfg.AllowedIPs) == 0
+	result := len(config.Cfg.AllowedDestFqdn) == 0 && len(r.AllowedIPNet) == 0
 
-	if len(config.Cfg.AllowedDestFqdn) > 0 && slices.Contains(config.Cfg.AllowedDestFqdn, req.DestAddr.FQDN) {
+	if !result && len(config.Cfg.AllowedDestFqdn) > 0 && slices.Contains(config.Cfg.AllowedDestFqdn, req.DestAddr.FQDN) {
 		result = true
 	}
 
-	if len(config.Cfg.AllowedIPs) > 0 && slices.Contains(config.Cfg.AllowedIPs, req.DestAddr.IP.String()) {
-		result = true
+	if !result && len(r.AllowedIPNet) > 0 {
+		for _, ipNet := range r.AllowedIPNet {
+			if ipNet.Contains(req.DestAddr.IP) {
+				result = true
+				break
+			}
+		}
 	}
 
-	if len(config.Cfg.RejectDestFqdn) > 0 && slices.Contains(config.Cfg.RejectDestFqdn, req.DestAddr.FQDN) {
+	if result && len(config.Cfg.RejectDestFqdn) > 0 && slices.Contains(config.Cfg.RejectDestFqdn, req.DestAddr.FQDN) {
 		result = false
 	}
 
-	if len(config.Cfg.RejectIPs) > 0 && slices.Contains(config.Cfg.RejectIPs, req.DestAddr.IP.String()) {
-		result = false
+	if result && len(r.RejectIPNet) > 0 {
+		for _, ipNet := range r.RejectIPNet {
+			if ipNet.Contains(req.DestAddr.IP) {
+				result = false
+				break
+			}
+		}
 	}
 
 	return ctx, result
