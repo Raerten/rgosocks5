@@ -75,6 +75,8 @@ func startProxy() {
 		socks5.WithRule(&rules.ProxyRulesSet{
 			AllowedIPNet: allowedIPNet,
 			RejectIPNet:  rejectIPNet,
+			AllowedFQDN:  config.Cfg.AllowedDestFQDN,
+			RejectFQDN:   config.Cfg.RejectDestFQDN,
 		}),
 		socks5.WithResolver(&resolver.DNSResolver{
 			Cache:      cache.New(1*time.Minute, 3*time.Minute),

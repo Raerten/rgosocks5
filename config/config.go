@@ -11,8 +11,8 @@ type Config struct {
 	ProxyUser        string   `env:"PROXY_USER" envDefault:""`
 	ProxyPassword    string   `env:"PROXY_PASS" envDefault:""`
 	ProxyAddress     string   `env:"PROXY_ADDRESS,expand" envDefault:"$PROXY_HOST:$PROXY_PORT"`
-	AllowedDestFqdn  []string `env:"PROXY_ALLOWED_DEST_FQDN" envDefault:""`
-	RejectDestFqdn   []string `env:"PROXY_REJECT_DEST_FQDN" envDefault:""`
+	AllowedDestFQDN  []string `env:"PROXY_ALLOWED_DEST_FQDN" envDefault:""`
+	RejectDestFQDN   []string `env:"PROXY_REJECT_DEST_FQDN" envDefault:""`
 	AllowedIPs       []string `env:"PROXY_ALLOWED_IPS" envDefault:""`
 	RejectIPs        []string `env:"PROXY_REJECT_IPS" envDefault:""`
 	DisableBind      bool     `env:"PROXY_DISABLE_BIND" envDefault:"false"`

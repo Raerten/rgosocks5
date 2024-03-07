@@ -12,6 +12,8 @@ import (
 type ProxyRulesSet struct {
 	AllowedIPNet []*net.IPNet
 	RejectIPNet  []*net.IPNet
+	AllowedFQDN  []string
+	RejectFQDN   []string
 }
 
 func (r *ProxyRulesSet) Allow(ctx context.Context, req *socks5.Request) (context.Context, bool) {
@@ -23,9 +25,9 @@ func (r *ProxyRulesSet) Allow(ctx context.Context, req *socks5.Request) (context
 		return ctx, false
 	}
 
-	result := len(config.Cfg.AllowedDestFqdn) == 0 && len(r.AllowedIPNet) == 0
+	result := len(r.AllowedFQDN) == 0 && len(r.AllowedIPNet) == 0
 
-	if !result && len(config.Cfg.AllowedDestFqdn) > 0 && slices.Contains(config.Cfg.AllowedDestFqdn, req.DestAddr.FQDN) {
+	if !result && len(r.AllowedFQDN) > 0 && slices.Contains(r.AllowedFQDN, req.DestAddr.FQDN) {
 		result = true
 	}
 
@@ -38,7 +40,7 @@ func (r *ProxyRulesSet) Allow(ctx context.Context, req *socks5.Request) (context
 		}
 	}
 
-	if result && len(config.Cfg.RejectDestFqdn) > 0 && slices.Contains(config.Cfg.RejectDestFqdn, req.DestAddr.FQDN) {
+	if result && len(r.RejectFQDN) > 0 && slices.Contains(r.RejectFQDN, req.DestAddr.FQDN) {
 		result = false
 	}
 
