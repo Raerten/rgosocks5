@@ -13,6 +13,7 @@ import (
 	"rgosocks/resolver"
 	"rgosocks/rules"
 	"rgosocks/slogger"
+	"strings"
 	"syscall"
 	"time"
 	_ "time/tzdata"
@@ -25,6 +26,7 @@ var (
 )
 
 func startProxy() {
+	// Prepare authenticator config
 	var authenticator []socks5.Authenticator
 	if config.Cfg.ProxyUser != "" && config.Cfg.ProxyPassword != "" {
 		authenticator = append(authenticator, socks5.UserPassAuthenticator{
@@ -34,10 +36,46 @@ func startProxy() {
 		})
 	}
 
+	// Prepare allowed IP networks
+	var allowedIPNet []*net.IPNet
+	for _, cidr := range config.Cfg.AllowedIPs {
+		// Process single ip as /32 network
+		if !strings.Contains(cidr, "/") {
+			cidr = cidr + "/32"
+		}
+		_, ipNet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			slog.Error("Parse AllowedIPs", "err", err)
+			os.Exit(1)
+		}
+		slog.Debug("Parse AllowedIPs", "ipNet", ipNet)
+		allowedIPNet = append(allowedIPNet, ipNet)
+	}
+
+	// Prepare reject IP networks
+	var rejectIPNet []*net.IPNet
+	for _, cidr := range config.Cfg.RejectIPs {
+		// Process single ip as /32 network
+		if !strings.Contains(cidr, "/") {
+			cidr = cidr + "/32"
+		}
+		_, ipNet, err := net.ParseCIDR(cidr)
+		if err != nil {
+			slog.Error("Parse RejectIPs", "err", err)
+			os.Exit(1)
+		}
+		slog.Debug("Parse RejectIPs", "ipNet", ipNet)
+		rejectIPNet = append(rejectIPNet, ipNet)
+	}
+
+	// Configure socks5 server
 	server := socks5.NewServer(
 		socks5.WithLogger(&slogger.Socks5Logger{}),
 		socks5.WithAuthMethods(authenticator),
-		socks5.WithRule(&rules.ProxyRulesSet{}),
+		socks5.WithRule(&rules.ProxyRulesSet{
+			AllowedIPNet: allowedIPNet,
+			RejectIPNet:  rejectIPNet,
+		}),
 		socks5.WithResolver(&resolver.DNSResolver{
 			Cache:      cache.New(1*time.Minute, 3*time.Minute),
 			DNSClient:  new(dns.Client),
