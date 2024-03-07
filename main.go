@@ -5,7 +5,6 @@ import (
 	"github.com/miekg/dns"
 	"github.com/patrickmn/go-cache"
 	"github.com/things-go/go-socks5"
-	"log"
 	"log/slog"
 	"net"
 	"os"
@@ -13,9 +12,16 @@ import (
 	"rgosocks/config"
 	"rgosocks/resolver"
 	"rgosocks/rules"
+	"rgosocks/slogger"
 	"syscall"
 	"time"
 	_ "time/tzdata"
+)
+
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 func startProxy() {
@@ -29,7 +35,7 @@ func startProxy() {
 	}
 
 	server := socks5.NewServer(
-		socks5.WithLogger(socks5.NewLogger(log.New(os.Stdout, "socks5: ", log.LstdFlags))),
+		socks5.WithLogger(&slogger.Socks5Logger{}),
 		socks5.WithAuthMethods(authenticator),
 		socks5.WithRule(&rules.ProxyRulesSet{}),
 		socks5.WithResolver(&resolver.DNSResolver{
@@ -46,7 +52,14 @@ func startProxy() {
 }
 
 func main() {
+	slog.Info("Version", "version", version, "commit", commit, "date", date)
 	config.Parse()
+
+	if config.Cfg.LogLevelDebug {
+		slog.SetLogLoggerLevel(slog.LevelDebug)
+	}
+
+	slog.Debug("Config", "env", config.Cfg)
 
 	go startProxy()
 
@@ -55,5 +68,5 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	sig := <-sigs
-	slog.Info("signal", "sig", sig.String())
+	slog.Debug("Signal", "sig", sig.String())
 }

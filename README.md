@@ -40,6 +40,7 @@ services:
 | PROXY_PORT              | Port for proxy                                                                               | 1080                    |
 | PROXY_ADDRESS           | Address for proxy                                                                            | $PROXY_HOST:$PROXY_PORT |
 | TZ                      | Timezone for accurate log times                                                              | UTC                     |
+| LOG_LEVEL_DEBUG         | Enable debug logs                                                                            | false                   |
 | PROXY_ALLOWED_DEST_FQDN | Comma separated white list dest FQDN                                                         |                         |
 | PROXY_REJECT_DEST_FQDN  | Comma separated black list dest FQDN                                                         |                         |
 | PROXY_ALLOWED_IPS       | Comma separated white list dest IPs                                                          |                         |

@@ -21,6 +21,7 @@ type Config struct {
 	DnsPort          int      `env:"DNS_PORT" envDefault:"53"`
 	DnsUseCache      bool     `env:"DNS_USE_CACHE" envDefault:"true"`
 	PreferIpv6       bool     `env:"PREFER_IPV6" envDefault:"false"`
+	LogLevelDebug    bool     `env:"LOG_LEVEL_DEBUG" envDefault:"false"`
 }
 
 var Cfg = Config{}
