@@ -4,13 +4,17 @@ Docker image builds for `linux/amd64` `linux/arm/v7` `linux/arm64/v8`
 
 Binary builds for `linux/amd64` `linux/arm/v7` `linux/arm64/v8` `windows`
 
+🆕 Image available as [raerten/rgosocks5](https://hub.docker.com/r/raerten/rgosocks5)
+
 [![Build status](https://github.com/Raerten/rgosocks5/actions/workflows/release.yml/badge.svg)](https://github.com/Raerten/rgosocks5/actions/workflows/release.yml)
 ![Go version](https://img.shields.io/github/go-mod/go-version/raerten/rgosocks5)
 
 ![Docker Pulls](https://img.shields.io/docker/pulls/raerten/rgosocks5)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/raerten/rgosocks5/latest)
 
-## docker-compose.yml:
+## Installation
+
+To install rgoSocks5, you can use Docker Compose with the provided `docker-compose.yml` file:
 
 ```yml
 version: "3"
@@ -19,16 +23,22 @@ services:
   socks5:
     image: raerten/rgosocks5
     ports:
-      - 1080:1080 # socks5 port
+      - "1080:1080" # socks5 port
     environment:
-      - PROXY_USER=
-      - PROXY_PASSWORD=
+      - PROXY_USER=secret
+      # example command for generate random string
+      # openssl rand -hex 32
+      - PROXY_PASSWORD=secret_random_password
       - PROXY_PORT=1080
       # Timezone for accurate log times
       - TZ=Europe/Moscow
 ```
 
-🆕 Image available as [raerten/rgosocks5](https://hub.docker.com/r/raerten/rgosocks5)
+Run the following command in the same directory as your docker-compose.yml file:
+
+```bash
+docker-compose up
+```
 
 ## Env variables
 

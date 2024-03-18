@@ -4,5 +4,12 @@ services:
   socks5:
     image: raerten/rgosocks5
     container_name: rgosocks5
+    restart: unless-stopped
     ports:
       - "1080:1080"
+    environment:
+      - PROXY_USER=secret
+      # example command for generate random string
+      # openssl rand -hex 32
+      - PROXY_PASSWORD=secret_random_password
+      - TZ=Europe/Moscow
