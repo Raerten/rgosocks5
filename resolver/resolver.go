@@ -53,7 +53,7 @@ func (d DNSResolver) Resolve(ctx context.Context, name string) (context.Context,
 	if len(config.Cfg.DnsHost) == 0 {
 		if config.Cfg.PreferIpv6 {
 			addr6, err := net.ResolveIPAddr("ip6", name)
-			if err != nil {
+			if err == nil {
 				slog.Debug("Resolve", "name", name, "ip", addr6.IP)
 
 				return ctx, addr6.IP, nil
@@ -69,13 +69,15 @@ func (d DNSResolver) Resolve(ctx context.Context, name string) (context.Context,
 		return ctx, addr.IP, nil
 	}
 
-	val, expiration, found := d.Cache.GetWithExpiration(name)
-	if found {
-		ip := d.getRandIp(val.([]net.IP))
+	if config.Cfg.DnsUseCache {
+		val, expiration, found := d.Cache.GetWithExpiration(name)
+		if found {
+			ip := d.getRandIp(val.([]net.IP))
 
-		slog.Debug("Resolve", "name", name, "cache", true, "expiration", expiration, "ip", ip)
+			slog.Debug("Resolve", "name", name, "cache", true, "expiration", expiration, "ip", ip)
 
-		return ctx, ip, nil
+			return ctx, ip, nil
+		}
 	}
 
 	var ttl uint32
@@ -84,22 +86,24 @@ func (d DNSResolver) Resolve(ctx context.Context, name string) (context.Context,
 
 	if config.Cfg.PreferIpv6 {
 		ips, ttl, err = d.resolve(ctx, name, dns.TypeAAAA)
-		if err != nil {
+		if err != nil || len(ips) == 0 {
 			ips, ttl, err = d.resolve(ctx, name, dns.TypeA)
-			if err != nil {
+			if err != nil || len(ips) == 0 {
 				return ctx, nil, err
 			}
 		}
 	} else {
 		ips, ttl, err = d.resolve(ctx, name, dns.TypeA)
-		if err != nil {
+		if err != nil || len(ips) == 0 {
 			return ctx, nil, err
 		}
 	}
 
 	ip := d.getRandIp(ips)
 	slog.Debug("Resolve", "name", name, "cache", false, "ttl", ttl, "ip", ip)
-	d.Cache.Set(name, ips, time.Duration(ttl)*time.Second)
+	if config.Cfg.DnsUseCache {
+		d.Cache.Set(name, ips, time.Duration(ttl)*time.Second)
+	}
 
 	return ctx, ip, err
 }

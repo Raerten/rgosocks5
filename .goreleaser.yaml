@@ -13,6 +13,7 @@ project_name: rgosocks5
 before:
   hooks:
     - go mod tidy
+    - go test ./... -v
 
 builds:
   - env:
