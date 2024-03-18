@@ -68,6 +68,11 @@ func startProxy() {
 		rejectIPNet = append(rejectIPNet, ipNet)
 	}
 
+	var dnsCache *cache.Cache = nil
+	if config.Cfg.DnsUseCache {
+		dnsCache = cache.New(1*time.Minute, 3*time.Minute)
+	}
+
 	// Configure socks5 server
 	server := socks5.NewServer(
 		socks5.WithLogger(&slogger.Socks5Logger{}),
@@ -79,7 +84,7 @@ func startProxy() {
 			RejectFQDN:   config.Cfg.RejectDestFQDN,
 		}),
 		socks5.WithResolver(&resolver.DNSResolver{
-			Cache:      cache.New(1*time.Minute, 3*time.Minute),
+			Cache:      dnsCache,
 			DNSClient:  new(dns.Client),
 			DNSAddress: net.JoinHostPort(config.Cfg.DnsHost, fmt.Sprintf("%d", config.Cfg.DnsPort)),
 		}),

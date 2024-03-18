@@ -131,6 +131,7 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
 
 	config.Cfg.PreferIpv6 = false
 	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = true
 
 	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
 	suite.NoError(err)
@@ -151,6 +152,52 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
 	val, found = cacheDB.Get("4.example.com")
 	suite.Equal(found, true)
 	suite.Equal(val.([]net.IP)[0].String(), ipv4)
+}
+
+func (suite *ResolverTestSuite) TestNameResolveIpv4CustomNoCache() {
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
+
+	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
+
+	resolver := &DNSResolver{
+		Cache:      cacheDB,
+		DNSClient:  new(dns.Client),
+		DNSAddress: net.JoinHostPort(addr.Addr().String(), fmt.Sprintf("%d", addr.Port())),
+	}
+
+	config.Cfg.PreferIpv6 = false
+	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = false
+
+	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
+	suite.Equal(ip.String(), ipv4)
+
+	suite.Equal(cacheDB.ItemCount(), 0)
+
+	_, found := cacheDB.Get("4.example.com")
+	suite.Equal(found, false)
+	suite.Equal(cacheDB.ItemCount(), 0)
+}
+
+func (suite *ResolverTestSuite) TestNameResolveIpv4CustomCacheNil() {
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
+
+	resolver := &DNSResolver{
+		Cache:      nil,
+		DNSClient:  new(dns.Client),
+		DNSAddress: net.JoinHostPort(addr.Addr().String(), fmt.Sprintf("%d", addr.Port())),
+	}
+
+	config.Cfg.PreferIpv6 = false
+	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = false
+
+	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
+	suite.Equal(ip.String(), ipv4)
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
@@ -167,6 +214,7 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
 
 	config.Cfg.PreferIpv6 = true
 	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = true
 
 	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
 	suite.NoError(err)
@@ -189,6 +237,32 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
 	suite.Equal(val.([]net.IP)[0].String(), ipv6)
 }
 
+func (suite *ResolverTestSuite) TestNameResolveIpv6CustomТщСфсру() {
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
+
+	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
+
+	resolver := &DNSResolver{
+		Cache:      cacheDB,
+		DNSClient:  new(dns.Client),
+		DNSAddress: net.JoinHostPort(addr.Addr().String(), fmt.Sprintf("%d", addr.Port())),
+	}
+
+	config.Cfg.PreferIpv6 = true
+	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = false
+
+	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
+	suite.Equal(ip.String(), ipv6)
+
+	suite.Equal(cacheDB.ItemCount(), 0)
+
+	_, found := cacheDB.Get("4.example.com")
+	suite.Equal(found, false)
+}
+
 func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
 	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
 	suite.NoError(err)
@@ -203,6 +277,7 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
 
 	config.Cfg.PreferIpv6 = true
 	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = true
 
 	_, ip, err := resolver.Resolve(context.Background(), "3.example.com")
 	suite.NoError(err)
@@ -213,6 +288,32 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
 	val, found := cacheDB.Get("3.example.com")
 	suite.Equal(found, true)
 	suite.Equal(val.([]net.IP)[0].String(), ipv4)
+}
+
+func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMissNoCache() {
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
+
+	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
+
+	resolver := &DNSResolver{
+		Cache:      cacheDB,
+		DNSClient:  new(dns.Client),
+		DNSAddress: net.JoinHostPort(addr.Addr().String(), fmt.Sprintf("%d", addr.Port())),
+	}
+
+	config.Cfg.PreferIpv6 = true
+	config.Cfg.DnsHost = "test"
+	config.Cfg.DnsUseCache = false
+
+	_, ip, err := resolver.Resolve(context.Background(), "3.example.com")
+	suite.NoError(err)
+	suite.Equal(ip.String(), ipv4)
+
+	suite.Equal(cacheDB.ItemCount(), 0)
+
+	_, found := cacheDB.Get("3.example.com")
+	suite.Equal(found, false)
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv6CustomNonExist() {
