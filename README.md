@@ -9,8 +9,8 @@ Binary builds for `linux/amd64` `linux/arm/v7` `linux/arm64/v8` `windows`
 [![Build status](https://github.com/Raerten/rgosocks5/actions/workflows/release.yml/badge.svg)](https://github.com/Raerten/rgosocks5/actions/workflows/release.yml)
 ![Go version](https://img.shields.io/github/go-mod/go-version/raerten/rgosocks5)
 
-![Docker Pulls](https://img.shields.io/docker/pulls/raerten/rgosocks5)
-![Docker Image Size (tag)](https://img.shields.io/docker/image-size/raerten/rgosocks5/latest)
+[![Docker Pulls](https://img.shields.io/docker/pulls/raerten/rgosocks5)](https://hub.docker.com/r/raerten/rgosocks5)
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/raerten/rgosocks5/latest)](https://hub.docker.com/r/raerten/rgosocks5)
 
 ## Installation
 
