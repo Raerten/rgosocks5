@@ -63,7 +63,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4() {
 	config.Cfg.DnsHost = ""
 	config.Cfg.PreferIpv6 = false
 
-	_, ip, _ := resolver.Resolve(context.Background(), "1.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "1.example.com")
+	suite.NoError(err)
 
 	suite.Equal(ip.String(), ipv4)
 }
@@ -74,7 +75,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Miss() {
 	config.Cfg.DnsHost = ""
 	config.Cfg.PreferIpv6 = false
 
-	_, ip, _ := resolver.Resolve(context.Background(), "nan.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "nan.example.com")
+	suite.Error(err)
 
 	suite.Nil(ip)
 }
@@ -85,7 +87,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6() {
 	config.Cfg.DnsHost = ""
 	config.Cfg.PreferIpv6 = true
 
-	_, ip, _ := resolver.Resolve(context.Background(), "1.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "1.example.com")
+	suite.NoError(err)
 
 	suite.Equal(ip.String(), ipv6)
 }
@@ -96,7 +99,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Short() {
 	config.Cfg.DnsHost = ""
 	config.Cfg.PreferIpv6 = true
 
-	_, ip, _ := resolver.Resolve(context.Background(), "2.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "2.example.com")
+	suite.NoError(err)
 
 	suite.Equal(ip.String(), ipv62Short)
 }
@@ -107,13 +111,15 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Miss() {
 	config.Cfg.DnsHost = ""
 	config.Cfg.PreferIpv6 = true
 
-	_, ip, _ := resolver.Resolve(context.Background(), "3.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "3.example.com")
+	suite.NoError(err)
 
 	suite.Equal(ip.String(), ipv4)
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
-	addr, _ := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
 
 	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
 
@@ -126,7 +132,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
 	config.Cfg.PreferIpv6 = false
 	config.Cfg.DnsHost = "test"
 
-	_, ip, _ := resolver.Resolve(context.Background(), "4.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
 	suite.Equal(ip.String(), ipv4)
 
 	suite.Equal(cacheDB.ItemCount(), 1)
@@ -135,7 +142,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
 	suite.Equal(found, true)
 	suite.Equal(val.([]net.IP)[0].String(), ipv4)
 
-	_, ip, _ = resolver.Resolve(context.Background(), "4.example.com")
+	_, ip, err = resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
 	suite.Equal(ip.String(), ipv4)
 
 	suite.Equal(cacheDB.ItemCount(), 1)
@@ -146,7 +154,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4Custom() {
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
-	addr, _ := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
 
 	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
 
@@ -159,7 +168,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
 	config.Cfg.PreferIpv6 = true
 	config.Cfg.DnsHost = "test"
 
-	_, ip, _ := resolver.Resolve(context.Background(), "4.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
 	suite.Equal(ip.String(), ipv6)
 
 	suite.Equal(cacheDB.ItemCount(), 1)
@@ -168,7 +178,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
 	suite.Equal(found, true)
 	suite.Equal(val.([]net.IP)[0].String(), ipv6)
 
-	_, ip, _ = resolver.Resolve(context.Background(), "4.example.com")
+	_, ip, err = resolver.Resolve(context.Background(), "4.example.com")
+	suite.NoError(err)
 	suite.Equal(ip.String(), ipv6)
 
 	suite.Equal(cacheDB.ItemCount(), 1)
@@ -179,7 +190,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6Custom() {
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
-	addr, _ := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
 
 	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
 
@@ -192,7 +204,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
 	config.Cfg.PreferIpv6 = true
 	config.Cfg.DnsHost = "test"
 
-	_, ip, _ := resolver.Resolve(context.Background(), "3.example.com")
+	_, ip, err := resolver.Resolve(context.Background(), "3.example.com")
+	suite.NoError(err)
 	suite.Equal(ip.String(), ipv4)
 
 	suite.Equal(cacheDB.ItemCount(), 1)
@@ -203,7 +216,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomMiss() {
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv6CustomNonExist() {
-	addr, _ := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
 
 	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
 
@@ -216,7 +230,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomNonExist() {
 	config.Cfg.PreferIpv6 = true
 	config.Cfg.DnsHost = "test"
 
-	_, ips, _ := resolver.Resolve(context.Background(), "nan.example.com")
+	_, ips, err := resolver.Resolve(context.Background(), "nan.example.com")
+	suite.NoError(err)
 	suite.Nil(ips)
 
 	suite.Equal(cacheDB.ItemCount(), 0)
@@ -226,8 +241,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv6CustomNonExist() {
 }
 
 func (suite *ResolverTestSuite) TestNameResolveIpv4CustomNonExist() {
-	//slog.SetLogLoggerLevel(slog.LevelDebug)
-	addr, _ := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	addr, err := netip.ParseAddrPort(suite.srv.LocalAddr().String())
+	suite.NoError(err)
 
 	cacheDB := cache.New(1*time.Minute, 3*time.Minute)
 
@@ -240,7 +255,8 @@ func (suite *ResolverTestSuite) TestNameResolveIpv4CustomNonExist() {
 	config.Cfg.PreferIpv6 = false
 	config.Cfg.DnsHost = "test"
 
-	_, ips, _ := resolver.Resolve(context.Background(), "nan.example.com")
+	_, ips, err := resolver.Resolve(context.Background(), "nan.example.com")
+	suite.NoError(err)
 	suite.Nil(ips)
 
 	suite.Equal(cacheDB.ItemCount(), 0)
