@@ -22,6 +22,12 @@ type Config struct {
 	DnsUseCache      bool     `env:"DNS_USE_CACHE" envDefault:"true"`
 	PreferIpv6       bool     `env:"PREFER_IPV6" envDefault:"false"`
 	LogLevelDebug    bool     `env:"LOG_LEVEL_DEBUG" envDefault:"false"`
+
+	StatusEnabled bool   `env:"STATUS_ENABLED" envDefault:"false"`
+	StatusHost    string `env:"STATUS_HOST" envDefault:"0.0.0.0"`
+	StatusPort    int    `env:"STATUS_PORT" envDefault:"2080"`
+	StatusAddress string `env:"STATUS_ADDRESS,expand" envDefault:"$STATUS_HOST:$STATUS_PORT"`
+	StatusBearer  string `env:"STATUS_TOKEN" envDefault:""`
 }
 
 var Cfg = Config{}

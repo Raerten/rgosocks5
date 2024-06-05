@@ -13,6 +13,7 @@ import (
 	"rgosocks/resolver"
 	"rgosocks/rules"
 	"rgosocks/slogger"
+	"rgosocks/stat"
 	"strings"
 	"syscall"
 	"time"
@@ -25,7 +26,7 @@ var (
 	date    = "unknown"
 )
 
-func startProxy() {
+func startProxy(status *stat.Stat) {
 	// Prepare authenticator config
 	var authenticator []socks5.Authenticator
 	if config.Cfg.ProxyUser != "" && config.Cfg.ProxyPassword != "" {
@@ -88,6 +89,7 @@ func startProxy() {
 			DNSClient:  new(dns.Client),
 			DNSAddress: net.JoinHostPort(config.Cfg.DnsHost, fmt.Sprintf("%d", config.Cfg.DnsPort)),
 		}),
+		socks5.WithDial(status.Dial),
 	)
 
 	slog.Info("Starting Socks5 Proxy", "address", config.Cfg.ProxyAddress)
@@ -106,7 +108,13 @@ func main() {
 
 	slog.Debug("Config", "env", config.Cfg)
 
-	go startProxy()
+	statusServer := stat.NewStat(
+		config.Cfg.StatusEnabled,
+		config.Cfg.StatusAddress,
+		config.Cfg.StatusBearer,
+	)
+
+	go startProxy(statusServer)
 
 	sigs := make(chan os.Signal, 1)
 
