@@ -12,13 +12,17 @@ import (
 
 type Stat struct {
 	sync.RWMutex
-	connCount uint64
+	connCnt   uint64
+	readBite  uint64
+	writeBite uint64
 	auth      string
 }
 
 type responseStat struct {
 	Status    string `json:"status"`
-	ConnCount uint64 `json:"connCount"`
+	ConnCount uint64 `json:"connCnt"`
+	ReadBite  uint64 `json:"readBite"`
+	WriteBite uint64 `json:"writeBite"`
 }
 
 func NewStat(enabled bool, address string, auth string) *Stat {
@@ -41,25 +45,31 @@ func (s *Stat) Dial(ctx context.Context, network, address string) (net.Conn, err
 		return conn, err
 	}
 
-	s.OpenConn()
+	s.connOpen()
 
 	return Conn{
 		conn,
-		s.CloseConn,
+		s.connRead,
+		s.connWrite,
+		s.connClose,
 	}, nil
 }
 
-func (s *Stat) ConnCount() uint64 {
-	return atomic.LoadUint64(&s.connCount)
+func (s *Stat) connOpen() {
+	atomic.AddUint64(&s.connCnt, 1)
 }
 
-func (s *Stat) OpenConn() {
-	atomic.AddUint64(&s.connCount, 1)
-}
-
-func (s *Stat) CloseConn() {
+func (s *Stat) connClose() {
 	var delta uint64 = 1
-	atomic.AddUint64(&s.connCount, ^(delta - 1))
+	atomic.AddUint64(&s.connCnt, ^(delta - 1))
+}
+
+func (s *Stat) connWrite(cnt int) {
+	atomic.AddUint64(&s.writeBite, uint64(cnt))
+}
+
+func (s *Stat) connRead(cnt int) {
+	atomic.AddUint64(&s.readBite, uint64(cnt))
 }
 
 func (s *Stat) listenAndServe(address string) {
@@ -83,7 +93,9 @@ func (s *Stat) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Content-Type", "application/json")
 		response, err := json.Marshal(responseStat{
 			Status:    "ok",
-			ConnCount: s.ConnCount(),
+			ConnCount: atomic.LoadUint64(&s.connCnt),
+			ReadBite:  atomic.LoadUint64(&s.readBite),
+			WriteBite: atomic.LoadUint64(&s.writeBite),
 		})
 
 		if err == nil {
