@@ -20,7 +20,7 @@ type Stat struct {
 
 type responseStat struct {
 	Status    string `json:"status"`
-	ConnCount uint64 `json:"connCnt"`
+	ConnCount uint64 `json:"connCount"`
 	ReadBite  uint64 `json:"readBite"`
 	WriteBite uint64 `json:"writeBite"`
 }
