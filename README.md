@@ -45,7 +45,7 @@ docker-compose up
 | Environment variable    | Description                                                                                  | Default value             |
 |-------------------------|----------------------------------------------------------------------------------------------|---------------------------|
 | PROXY_USER              | Username for proxy                                                                           |                           |
-| PROXY_PASSWORD          | Password for proxy                                                                           |                           |
+| PROXY_PASS              | Password for proxy                                                                           |                           |
 | PROXY_HOST              | Host for proxy                                                                               | 0.0.0.0                   |
 | PROXY_PORT              | Port for proxy                                                                               | 1080                      |
 | PROXY_ADDRESS           | Address for proxy                                                                            | $PROXY_HOST:$PROXY_PORT   |
