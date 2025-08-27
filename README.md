@@ -28,7 +28,7 @@ services:
       - PROXY_USER=secret
       # example command for generate random string
       # openssl rand -hex 32
-      - PROXY_PASSWORD=secret_random_password
+      - PROXY_PASS=secret_random_password
       - PROXY_PORT=1080
       # Timezone for accurate log times
       - TZ=Europe/Moscow
