@@ -31,7 +31,7 @@ func TestCalculatorTestSuite(t *testing.T) {
 }
 
 func (suite *ResolverTestSuite) SetupSuite() {
-	suite.srv, _ = mockdns.NewServer(map[string]mockdns.Zone{
+	srv, err := mockdns.NewServer(map[string]mockdns.Zone{
 		"1.example.com.": {
 			A:    []string{ipv4, "192.168.1.2"},
 			AAAA: []string{ipv6},
@@ -47,7 +47,9 @@ func (suite *ResolverTestSuite) SetupSuite() {
 			AAAA: []string{ipv6},
 		},
 	}, false)
+	suite.Require().NoError(err, "start mock DNS server")
 
+	suite.srv = srv
 	suite.srv.PatchNet(net.DefaultResolver)
 }
 
