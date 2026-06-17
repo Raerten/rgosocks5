@@ -4,7 +4,7 @@ go 1.26.4
 
 require (
 	github.com/caarlos0/env/v11 v11.4.1
-	github.com/foxcpp/go-mockdns v1.1.0
+	github.com/foxcpp/go-mockdns v1.2.0
 	github.com/miekg/dns v1.1.72
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/stretchr/testify v1.11.1
