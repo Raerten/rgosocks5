@@ -1,19 +1,13 @@
 package config
 
 import (
-	"os"
 	"testing"
 )
 
 func TestParse(t *testing.T) {
-	os.Setenv("PROXY_HOST", "1.1.1.1")
-	os.Setenv("PROXY_PORT", "8080")
-	os.Setenv("LOG_LEVEL_DEBUG", "true")
-	defer func() {
-		os.Unsetenv("PROXY_HOST")
-		os.Unsetenv("PROXY_PORT")
-		os.Unsetenv("LOG_LEVEL_DEBUG")
-	}()
+	t.Setenv("PROXY_HOST", "1.1.1.1")
+	t.Setenv("PROXY_PORT", "8080")
+	t.Setenv("LOG_LEVEL_DEBUG", "true")
 
 	Parse()
 

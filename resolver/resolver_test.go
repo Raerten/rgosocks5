@@ -53,7 +53,9 @@ func (suite *ResolverTestSuite) SetupSuite() {
 
 // this function executes after all tests executed
 func (suite *ResolverTestSuite) TearDownSuite() {
-	suite.srv.Close()
+	if err := suite.srv.Close(); err != nil {
+		suite.T().Errorf("close mock DNS server: %v", err)
+	}
 	mockdns.UnpatchNet(net.DefaultResolver)
 }
 

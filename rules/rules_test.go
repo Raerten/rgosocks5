@@ -25,7 +25,7 @@ func getConnectRules(setup *setupRule) (*ProxyRulesSet, *socks5.Request) {
 		setup.command = statute.CommandConnect
 	}
 	req := &socks5.Request{
-		Request: *&statute.Request{
+		Request: statute.Request{
 			Command: setup.command,
 		},
 		DestAddr: &statute.AddrSpec{
