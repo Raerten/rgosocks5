@@ -31,63 +31,23 @@ builds:
       - v1
       - v3
 
-dockers:
-  - image_templates:
-      - raerten/rgosocks5:latest-amd64
-      - raerten/rgosocks5:{{ .Tag }}-amd64
-    goos: linux
-    goarch: amd64
-    goamd64: v1
-    skip_push: false
-    build_flag_templates:
-      - --platform=linux/amd64
-      - --label=org.opencontainers.image.title={{.ProjectName}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
+dockers_v2:
+  - images:
+      - raerten/rgosocks5
+    tags:
+      - "{{ .Tag }}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+    labels:
+      org.opencontainers.image.title: "{{ .ProjectName }}"
+      org.opencontainers.image.version: "{{ .Version }}"
+      org.opencontainers.image.created: "{{ .Date }}"
+      org.opencontainers.image.revision: "{{ .FullCommit }}"
     extra_files:
       - .build/passwd
-  - image_templates:
-      - raerten/rgosocks5:latest-arm64v8
-      - raerten/rgosocks5:{{ .Tag }}-arm64v8
-    goos: linux
-    goarch: arm64
-    skip_push: false
-    build_flag_templates:
-      - --platform=linux/arm64/v8
-      - --label=org.opencontainers.image.title={{.ProjectName}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-    extra_files:
-      - .build/passwd
-  - image_templates:
-      - raerten/rgosocks5:latest-armv7
-      - raerten/rgosocks5:{{ .Tag }}-armv7
-    goos: linux
-    goarch: arm
-    goarm: "7"
-    skip_push: false
-    build_flag_templates:
-      - --platform=linux/arm/v7
-      - --label=org.opencontainers.image.title={{.ProjectName}}
-      - --label=org.opencontainers.image.version={{.Version}}
-      - --label=org.opencontainers.image.created={{.Date}}
-      - --label=org.opencontainers.image.revision={{.FullCommit}}
-    extra_files:
-      - .build/passwd
-
-docker_manifests:
-  - name_template: raerten/rgosocks5:{{ .Tag }}
-    image_templates:
-      - raerten/rgosocks5:{{ .Tag }}-amd64
-      - raerten/rgosocks5:{{ .Tag }}-arm64v8
-      - raerten/rgosocks5:{{ .Tag }}-armv7
-  - name_template: raerten/rgosocks5:latest
-    image_templates:
-      - raerten/rgosocks5:latest-amd64
-      - raerten/rgosocks5:latest-arm64v8
-      - raerten/rgosocks5:latest-armv7
 
 archives:
   - #
