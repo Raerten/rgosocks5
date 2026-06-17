@@ -22,7 +22,7 @@ func TestParse(t *testing.T) {
 	}
 
 	if Cfg.ProxyPort != 8080 {
-		t.Errorf("Parse() = %q, want %q", Cfg.ProxyPort, 8080)
+		t.Errorf("Parse() = %d, want %d", Cfg.ProxyPort, 8080)
 	}
 
 	if Cfg.ProxyAddress != "1.1.1.1:8080" {
