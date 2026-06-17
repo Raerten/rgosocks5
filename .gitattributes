@@ -1,0 +1,10 @@
+# Go sources are LF-only (gofmt normalizes to LF)
+*.go text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
+
+# Keep YAML/Dockerfile/shell LF for cross-platform CI
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile text eol=lf
+*.sh text eol=lf

@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/miekg/dns"
-	"github.com/patrickmn/go-cache"
-	"github.com/things-go/go-socks5"
 	"log/slog"
 	"net"
 	"os"
@@ -14,16 +11,15 @@ import (
 	"rgosocks/rules"
 	"rgosocks/slogger"
 	"rgosocks/stat"
+	"rgosocks/version"
 	"strings"
 	"syscall"
 	"time"
 	_ "time/tzdata"
-)
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	"github.com/miekg/dns"
+	"github.com/patrickmn/go-cache"
+	"github.com/things-go/go-socks5"
 )
 
 func startProxy(status *stat.Stat) {
@@ -99,7 +95,8 @@ func startProxy(status *stat.Stat) {
 }
 
 func main() {
-	slog.Info("Version", "version", version, "commit", commit, "date", date)
+	ver, commit, date, goVer, arch := version.Info()
+	slog.Info("Version", "version", ver, "commit", commit, "date", date, "go", goVer, "arch", arch)
 	config.Parse()
 
 	if config.Cfg.LogLevelDebug {
