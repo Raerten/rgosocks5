@@ -11,9 +11,12 @@ before:
     - go test ./... -v
 
 builds:
-  - env:
+  # Baseline amd64 (v1) plus arm targets. The Docker image is built from this
+  # id only, so it stays runnable on CPUs without AVX2.
+  - id: rgosocks5
+    env: &build_env
       - CGO_ENABLED=0
-    ldflags:
+    ldflags: &build_ldflags
       - -s -w
       - -X rgosocks/version.version={{ .Version }}
       - -X rgosocks/version.commit={{ .Commit }}
@@ -29,10 +32,22 @@ builds:
       - "7"
     goamd64:
       - v1
+  # Optimized amd64 (v3) archives for modern CPUs.
+  - id: rgosocks5-amd64v3
+    env: *build_env
+    ldflags: *build_ldflags
+    goos:
+      - windows
+      - linux
+    goarch:
+      - amd64
+    goamd64:
       - v3
 
 dockers_v2:
-  - images:
+  - ids:
+      - rgosocks5
+    images:
       - raerten/rgosocks5
     tags:
       - "{{ .Tag }}"
